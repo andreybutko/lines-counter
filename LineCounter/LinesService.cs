@@ -40,7 +40,8 @@ namespace LinesCounter
                 }
             }
 
-            var maxvalue = calculatedLines.Max(x => x.Item1);
+
+            var maxvalue = calculatedLines.DefaultIfEmpty().Max(x => x.Item1);
             var result = calculatedLines.Where(l => l.Item1 == maxvalue).ToList();
 
             return (result, invalidLines);
