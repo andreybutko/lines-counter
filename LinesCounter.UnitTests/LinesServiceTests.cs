@@ -25,10 +25,10 @@ namespace LinesCounter.UnitTests
             FileMock.Setup(_ => _.ReadLines(It.IsAny<string>()))
                 .Returns(testItem.Input);
 
-            var (maxLines, invalidLines) = Service.GetMaxStringSum("test.txt");
+            var (maxLines, invalidLines) = Service.GetMaxLineNumbers("test.txt");
 
-            Assert.Equal(testItem.ExpectedMaxLines, maxLines);
-            Assert.Equal(testItem.ExpectedInvalidLines, invalidLines);
+            Assert.Equal(testItem.ExpectedMaxLineNumbers, maxLines);
+            Assert.Equal(testItem.ExpectedInvalidLinesNumbers, invalidLines);
         }
     }
 }

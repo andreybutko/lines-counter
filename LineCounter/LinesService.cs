@@ -10,39 +10,43 @@ namespace LinesCounter
     {
         private IFileSystem FileSystem { get; }
 
+
         public LinesService(IFileSystem fileSystem)
         {
             FileSystem = fileSystem;
         }
 
-        public (IList<(float, string)>, IList<string>) GetMaxStringSum(string path)
+        public (IList<int>, IList<int>) GetMaxLineNumbers(string path)
         {
             var lines = FileSystem.File.ReadLines(Path.GetFullPath(path))
                 .ToList();
 
-            var invalidLines = new List<string>();
-            var calculatedLines = new List<(float, string)>();
+            var invalidLines = new List<int>();
+            var calculatedLines = new List<(int, float, string)>();
 
-            foreach (var line in lines)
+            for (var i = 0; i < lines.Count; i++)
             {
                 try
                 {
+                    var line = lines[i];
                     if (string.IsNullOrWhiteSpace(line))
                         continue;
 
                     var numbers = line.Split(',');
                     var sum = numbers.Sum(LinesUtility.ValidateFloatString);
-                    calculatedLines.Add((sum, line));
+                    calculatedLines.Add((i + 1, sum, line));
                 }
                 catch (ArgumentException)
                 {
-                    invalidLines.Add(line);
+                    invalidLines.Add(i + 1);
                 }
             }
 
-
-            var maxvalue = calculatedLines.DefaultIfEmpty().Max(x => x.Item1);
-            var result = calculatedLines.Where(l => l.Item1 == maxvalue).ToList();
+            var maxvalue = calculatedLines.DefaultIfEmpty().Max(x => x.Item2);
+            var result = calculatedLines
+                .Where(l => l.Item2 == maxvalue)
+                .Select(_ => _.Item1)
+                .ToList();
 
             return (result, invalidLines);
         }

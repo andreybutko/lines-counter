@@ -9,39 +9,31 @@ namespace LinesCounter
     {
         static void Main(string[] args)
         {
-            var path = string.Empty;
-
+            string path;
             if (args.Length == 0)
             {
                 Console.WriteLine("Enter source file path:");
                 path = AskForPath();
             }
+            else
+            {
+                path = args[0];
+            }
 
             var service = new LinesService(new FileSystem());
 
-            var (maxLines, invalidLines) = service.GetMaxStringSum(path);
+            var (maxLineNumbers, invalidLines) = service.GetMaxLineNumbers(path);
 
-            PrintResults(maxLines, invalidLines);
+            Print("TOP lines", maxLineNumbers);
+            Print("Invalid lines", invalidLines);
         }
 
-        private static void PrintResults(IList<(float, string)> maxLines, IList<string> invalidLines)
+        private static void Print(string name, IList<int> numbers)
         {
-            Console.WriteLine("Results:");
-            if (maxLines.Count > 1)
-            {
-                Console.WriteLine("Wow, there are a few of them!");
-            }
+            Console.WriteLine($"{name}:");
 
-            foreach (var (sum, line) in maxLines)
-            {
-                Console.WriteLine($"Sum: {sum} Line: {line}");
-            }
-
-            Console.WriteLine("Invalid lines:");
-            foreach (var line in invalidLines)
-            {
-                Console.WriteLine(line);
-            }
+            var result = string.Join(',', numbers);
+            Console.WriteLine(result);
         }
 
         private static string AskForPath()
